@@ -12,4 +12,4 @@ set grid y2tics
 set title "Last 12 hours temperature at UW weather station"
 set output "weather.svg"
 
-plot "data.txt" using 1:2 with lines lt 3 lw 2 notitle
+plot "data.txt" using 1:2 smooth bezier lt 3 lw 2 notitle
