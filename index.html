@@ -1,0 +1,20 @@
+<html><head><title>Last 12 hours weather</title>
+</head>
+<body onresize="resize()">
+<link rel="apple-touch-icon" href="/grigg/weather/iphone-icon.png" />
+
+<embed id="plot" src="weather.cgi" width="100%" type="image/svg+xml"/>
+
+<script>
+function resize()
+{
+document.getElementById("plot").height=self.innerHeight*0.95
+}
+
+window.onorientationchange=resize;
+
+resize();
+</script>
+
+</body>
+</html>
