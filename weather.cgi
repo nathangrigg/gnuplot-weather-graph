@@ -33,9 +33,11 @@ def doupdate():
 	gnuplot_data=[gnuplot_script]
 	for row in data:
 		if row[2][:3]<>"0.0":
+			parsed=time.strptime(row[1],"%Y-%m-%d %H:%M")
+			gmt=calendar.timegm(parsed)
+			local=time.localtime(gmt)
 			gnuplot_data.append(time.strftime("%Y-%m-%d-%H-%M",
-			time.localtime(calendar.timegm(time.strptime(row[1],"%Y-%m-%d %H:%M")))) +
-			" " + row[2])
+				local)  + " " + row[2])
 
 	rawdata.close()
 
@@ -43,10 +45,12 @@ def doupdate():
 	process = subprocess.Popen(["gnuplot"],stdin=pipe,stdout=pipe)
 	graph = process.communicate("\n".join(gnuplot_data))[0]
 
+	# replace some text in the labels
 	graph=graph.replace("<text> 0pm</text>","<text>noon</text>",1)
 	graph=graph.replace("<text> 0am</text>","<text>midnight</text>",1)
 	graph=graph.replace("pm</text>","</text>")
 	graph=graph.replace("am</text>","</text>")
+	# this line is necessary because gnuplot makes funny svgs
 	graph=graph.replace("\n xmlns:xlink=",'\n xmlns="http://www.w3.org/2000/svg"\n xmlns:xlink=',1)
 
 	#output graph
@@ -66,13 +70,13 @@ def servegraph():
 #file names
 plotfilename = "weather.svg"
 lastupdate = "lastupdate"
-logfile = "log.txt"
 
 #begin execution
 try:
 	lastupdatetime=os.stat(lastupdate).st_mtime
 	#if i have updated in the last 7 minutes
-	if (time.time()-lastupdatetime)<420 and os.stat(plotfilename).st_mtime>=lastupdatetime:
+	if (time.time()-lastupdatetime)<420 and \
+		os.stat(plotfilename).st_mtime>=lastupdatetime:
 		redrawgraph=False
 	else:
 		redrawgraph=True
@@ -83,14 +87,5 @@ if redrawgraph:
 	# mark as updated
 	open(lastupdate,'w').close()
 	doupdate()
-	file=open(logfile,'a')
-	file.write(time.strftime("%Y-%m-%d %H:%M:%S\n",time.localtime(time.time())))
-	file.close()
 else:
 	servegraph()
-
-
-
-
-
-
