@@ -2,6 +2,7 @@
 </head>
 <body onresize="resize()">
 <link rel="apple-touch-icon" href="/grigg/weather/iphone-icon.png" />
+<meta name="viewport" content="width=device-width" />
 
 <embed id="plot" src="weather.cgi" width="100%" type="image/svg+xml"/>
 
@@ -11,7 +12,6 @@ function resize()
 document.getElementById("plot").height=self.innerHeight*0.95
 }
 
-window.onorientationchange=resize;
 
 resize();
 </script>

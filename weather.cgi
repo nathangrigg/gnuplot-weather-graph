@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/local/bin/python2.5
 
 import os,time,calendar,csv,subprocess,urllib
 pipe=subprocess.PIPE
@@ -27,17 +27,18 @@ def doupdate():
 
 	#parse the csv data
 	data = csv.reader(rawdata)
-	data.next() #forget the header
+	data.next() #forget the headers
+	data.next() #now there are two
 
 	#fix date formats, process for gnuplot
 	gnuplot_data=[gnuplot_script]
 	for row in data:
-		if row[2][:3]<>"0.0":
-			parsed=time.strptime(row[1],"%Y-%m-%d %H:%M")
+		if row[3][:3]<>"0.0":
+			parsed=time.strptime(row[1]+' '+row[2],"%Y-%m-%d %H:%M")
 			gmt=calendar.timegm(parsed)
 			local=time.localtime(gmt)
 			gnuplot_data.append(time.strftime("%Y-%m-%d-%H-%M",
-				local)  + " " + row[2])
+				local)  + " " + row[3])
 
 	rawdata.close()
 
