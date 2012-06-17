@@ -12,7 +12,7 @@ set xdata time
 set xlabel "Time"
 set timefmt "%%Y-%%m-%%d-%%H-%%M"
 set format x "%%l%%p"
-set yrange [-0.02:%]
+set yrange [-0.02:%s]
 set ytics border nomirror format '%% g"'
 set y2tics border nomirror format '%% gdegF'
 set grid y2tics
