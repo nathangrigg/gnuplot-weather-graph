@@ -1,11 +1,11 @@
+#! /usr/bin/python
+
 import time
 import calendar
-import csv
-import subprocess
 import urllib
-pipe=subprocess.PIPE
+from subprocess import Popen, PIPE
 
-gnuplot_script="""reset
+GNUPLOT_SCRIPT = """reset
 set term svg size 600 480 dynamic fname 'Helvetica'
 set xdata time
 set xlabel "Time"
@@ -17,33 +17,57 @@ set noytics
 set grid y2tics
 set title "Last 12 hours temperature at UW weather station"
 
-plot "-" using 1:2 smooth bezier lt 3 lw 2 notitle
+plot "-" using 1:2 axes x1y2 smooth bezier lt 1 lw 2 notitle,\\
+"-" using 1:2 axes x1y1 smooth bezier lt 3 lw 2 notitle
 """
+
+def read_data(datafile):
+    """Convert weather csv file to array"""
+
+    data = []
+
+    # the first two lines are headers
+    datafile.next()
+    datafile.next()
+
+    for line in datafile:
+        row = line.split(',')
+
+        # date and time
+        parsed_time = time.strptime(row[1]+' '+row[2],"%Y-%m-%d %H:%M")
+        gmt_time=calendar.timegm(parsed_time)
+        local_time=time.localtime(gmt_time)
+
+        data.append([time.strftime("%Y-%m-%d-%H-%M", local_time),
+            row[3], row[5].strip()])
+
+    return data
+
+def gnuplot_data(data):
+    """Return generator for the data to be fed into gnuplot"""
+    yield GNUPLOT_SCRIPT
+
+    # temperature
+    for row in data:
+        if row[1][:3] <> "0.0":
+            yield row[0] + " " + row[1]
+    yield "end\n"
+
+    # rain
+    for row in data:
+        yield row[0] + " " + row[2]
+    yield "end"
+
 
 def doupdate(plotfilename):
     #grab the rawdata from atmos.washington.edu
-    rawdata = urllib.urlopen("http://www-k12.atmos.washington.edu/k12/grayskies/plot_nw_wx.cgi?Measurement=Temperature&station=UWA&interval=12&connect=dataonly")
-
-    #parse the csv data
-    data = csv.reader(rawdata)
-    data.next() #forget the headers
-    data.next() #now there are two
-
-    #fix date formats, process for gnuplot
-    gnuplot_data=[gnuplot_script]
-    for row in data:
-        if row[3][:3]<>"0.0":
-            parsed=time.strptime(row[1]+' '+row[2],"%Y-%m-%d %H:%M")
-            gmt=calendar.timegm(parsed)
-            local=time.localtime(gmt)
-            gnuplot_data.append(time.strftime("%Y-%m-%d-%H-%M",
-                local)  + " " + row[3])
-
+    rawdata = urllib.urlopen("http://www-k12.atmos.washington.edu/k12/grayskies/plot_nw_wx.cgi?Measurement=Temperature&Measurement=SumRain&station=UWA&interval=12&connect=dataonly")
+    data = read_data(rawdata)
     rawdata.close()
 
     #run gnuplot
-    process = subprocess.Popen(["gnuplot"],stdin=pipe,stdout=pipe)
-    graph = process.communicate("\n".join(gnuplot_data))[0]
+    process = Popen(["gnuplot"],stdin=PIPE,stdout=PIPE)
+    graph = process.communicate("\n".join(gnuplot_data(data)))[0]
 
     # replace some text in the labels
     graph=graph.replace("<text> 0pm</text>","<text>noon</text>",1)
@@ -66,3 +90,6 @@ def servegraph(plotfilename):
     graphfile = open(plotfilename,'r')
     print graphfile.read()
     graphfile.close()
+
+if __name__ == "__main__":
+    doupdate('weather.svg')
