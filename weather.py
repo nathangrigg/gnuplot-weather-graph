@@ -3,6 +3,7 @@
 import time
 import calendar
 import urllib
+import math
 from subprocess import Popen, PIPE
 
 GNUPLOT_SCRIPT = """reset
@@ -13,9 +14,10 @@ set ylabel "degrees Fahrenheit"
 set timefmt "%Y-%m-%d-%H-%M"
 set format x "%l%p"
 set y2tics border
-set noytics
+set yrange [-0.02:{}]
+set ytics border nomirror format '% g"'
 set grid y2tics
-set title "Last 12 hours temperature at UW weather station"
+set title "Last 12 hours rain and temperature at UW weather station"
 
 plot "-" using 1:2 axes x1y2 smooth bezier lt 1 lw 2 notitle,\\
 "-" using 1:2 axes x1y1 smooth bezier lt 3 lw 2 notitle
@@ -43,9 +45,12 @@ def read_data(datafile):
 
     return data
 
-def gnuplot_data(data):
+def gnuplot_cmd(data):
     """Return generator for the data to be fed into gnuplot"""
-    yield GNUPLOT_SCRIPT
+
+    max_rain = float(data[-1][2])
+
+    yield GNUPLOT_SCRIPT.format(math.ceil(max_rain + 0.05))
 
     # temperature
     for row in data:
@@ -58,7 +63,6 @@ def gnuplot_data(data):
         yield row[0] + " " + row[2]
     yield "end"
 
-
 def doupdate(plotfilename):
     #grab the rawdata from atmos.washington.edu
     rawdata = urllib.urlopen("http://www-k12.atmos.washington.edu/k12/grayskies/plot_nw_wx.cgi?Measurement=Temperature&Measurement=SumRain&station=UWA&interval=12&connect=dataonly")
@@ -67,7 +71,7 @@ def doupdate(plotfilename):
 
     #run gnuplot
     process = Popen(["gnuplot"],stdin=PIPE,stdout=PIPE)
-    graph = process.communicate("\n".join(gnuplot_data(data)))[0]
+    graph = process.communicate("\n".join(gnuplot_cmd(data)))[0]
 
     # replace some text in the labels
     graph=graph.replace("<text> 0pm</text>","<text>noon</text>",1)
@@ -93,3 +97,9 @@ def servegraph(plotfilename):
 
 if __name__ == "__main__":
     doupdate('weather.svg')
+
+#     rawdata = urllib.urlopen("http://www-k12.atmos.washington.edu/k12/grayskies/plot_nw_wx.cgi?Measurement=Temperature&Measurement=SumRain&station=UWA&interval=12&connect=dataonly")
+#     data = read_data(rawdata)
+#     rawdata.close()
+#     for line in gnuplot_cmd(data):
+#         print line
