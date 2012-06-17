@@ -10,11 +10,11 @@ GNUPLOT_SCRIPT = """reset
 set term svg size 600 480 dynamic fname 'Helvetica'
 set xdata time
 set xlabel "Time"
-set timefmt "%Y-%m-%d-%H-%M"
-set format x "%l%p"
-set yrange [-0.02:{}]
-set ytics border nomirror format '% g"'
-set y2tics border nomirror format '% gdegF'
+set timefmt "%%Y-%%m-%%d-%%H-%%M"
+set format x "%%l%%p"
+set yrange [-0.02:%]
+set ytics border nomirror format '%% g"'
+set y2tics border nomirror format '%% gdegF'
 set grid y2tics
 set title "Last 12 hours rain and temperature at UW weather station"
 
@@ -49,7 +49,7 @@ def gnuplot_cmd(data):
 
     max_rain = float(data[-1][2])
 
-    yield GNUPLOT_SCRIPT.format(math.ceil(max_rain + 0.05))
+    yield GNUPLOT_SCRIPT % math.ceil(max_rain + 0.05)
 
     # temperature
     for row in data:
