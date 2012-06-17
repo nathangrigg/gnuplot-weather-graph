@@ -10,12 +10,11 @@ GNUPLOT_SCRIPT = """reset
 set term svg size 600 480 dynamic fname 'Helvetica'
 set xdata time
 set xlabel "Time"
-set ylabel "degrees Fahrenheit"
 set timefmt "%Y-%m-%d-%H-%M"
 set format x "%l%p"
-set y2tics border
 set yrange [-0.02:{}]
 set ytics border nomirror format '% g"'
+set y2tics border nomirror format '% gdegF'
 set grid y2tics
 set title "Last 12 hours rain and temperature at UW weather station"
 
@@ -78,6 +77,7 @@ def doupdate(plotfilename):
     graph=graph.replace("<text> 0am</text>","<text>midnight</text>",1)
     graph=graph.replace("pm</text>","</text>")
     graph=graph.replace("am</text>","</text>")
+    graph=graph.replace("degF","&#xb0;")
     # this line is necessary because gnuplot makes funny svgs
     graph=graph.replace("\n xmlns:xlink=",'\n xmlns="http://www.w3.org/2000/svg"\n xmlns:xlink=',1)
 
