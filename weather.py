@@ -9,9 +9,8 @@ from subprocess import Popen, PIPE
 GNUPLOT_SCRIPT = """reset
 set term svg size 600 480 dynamic fname 'Helvetica'
 set xdata time
-set xlabel "Time"
 set timefmt "%%Y-%%m-%%d-%%H-%%M"
-set format x "%%l%%p"
+set format x "%%lh%%p"
 set format y '%% g"'
 set format y2 '%% gdegF'
 set yrange [-0.02:%s]
@@ -75,8 +74,8 @@ def doupdate(plotfilename):
     graph = process.communicate("\n".join(gnuplot_cmd(data)))[0]
 
     # replace some text in the labels
-    graph=graph.replace("<text> 0pm</text>","<text>noon</text>",1)
-    graph=graph.replace("<text> 0am</text>","<text>midnight</text>",1)
+    graph=graph.replace("<text> 0hpm</text>","<text>noon</text>",1)
+    graph=graph.replace("<text> 0ham</text>","<text>midn</text>",1)
     graph=graph.replace("pm</text>","</text>")
     graph=graph.replace("am</text>","</text>")
     graph=graph.replace("degF","&#xb0;")
