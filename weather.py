@@ -12,9 +12,11 @@ set xdata time
 set xlabel "Time"
 set timefmt "%%Y-%%m-%%d-%%H-%%M"
 set format x "%%l%%p"
+set format y '%% g"'
+set format y2 '%% gdegF'
 set yrange [-0.02:%s]
-set ytics border nomirror format '%% g"'
-set y2tics border nomirror format '%% gdegF'
+set ytics border nomirror
+set y2tics border nomirror
 set grid y2tics
 set title "Last 12 hours rain and temperature at UW weather station"
 

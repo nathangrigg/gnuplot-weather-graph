@@ -1,4 +1,5 @@
 lastupdate
 log.txt
 old/
+*.pyc
 weather.svg
