@@ -28,18 +28,15 @@ HTML_TEMPLATE = """<html>
     <title>Last 12 hours weather</title>
     <link rel="apple-touch-icon" href="/grigg/weather/iphone-icon.png" />
     <meta name="viewport" content="width=device-width" />
+    <style type="text/css">
+    html, body {margin:0; padding:0}
+    svg: {position:absolute; top:0; left:0; height:100%%; width:100%%;}
+    </style>
 </head>
-<body onresize="resize()">
+<body>
 <div id="plot">
 %s
 </div>
-<script>
-function resize()
-{
-document.getElementById("plot").height=self.innerHeight*0.95
-}
-resize();
-</script>
 <!-- Weather data is taken from Northwest Weather Resource: http://www-k12.atmos.washington.edu/k12/grayskies/nw_weather.html -->
 </body>
 </html>
