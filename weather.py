@@ -23,6 +23,28 @@ plot "-" using 1:2 axes x1y2 smooth bezier lt 1 lw 2 notitle,\\
 "-" using 1:2 axes x1y1 smooth bezier lt 3 lw 2 notitle
 """
 
+HTML_TEMPLATE = """<html>
+<head>
+    <title>Last 12 hours weather</title>
+    <link rel="apple-touch-icon" href="/grigg/weather/iphone-icon.png" />
+    <meta name="viewport" content="width=device-width" />
+</head>
+<body onresize="resize()">
+<div id="plot">
+%s
+</div>
+<script>
+function resize()
+{
+document.getElementById("plot").height=self.innerHeight*0.95
+}
+resize();
+</script>
+<!-- Weather data is taken from Northwest Weather Resource: http://www-k12.atmos.washington.edu/k12/grayskies/nw_weather.html -->
+</body>
+</html>
+"""
+
 def read_data(datafile):
     """Convert weather csv file to array"""
 
@@ -81,13 +103,15 @@ def doupdate(plotfilename):
     graph=graph.replace("degF","&#xb0;")
     # this line is necessary because gnuplot makes funny svgs
     graph=graph.replace("\n xmlns:xlink=",'\n xmlns="http://www.w3.org/2000/svg"\n xmlns:xlink=',1)
-
+    graph=graph.replace('<?xml version="1.0" standalone="no"?>\n<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "svg-20001102.dtd">', "")
     #output graph
-    print graph
+
+    html = HTML_TEMPLATE % graph
+    print html
 
     #save graph
     graphfile=open(plotfilename,'w')
-    graphfile.write(graph)
+    graphfile.write(html)
     graphfile.close()
 
 

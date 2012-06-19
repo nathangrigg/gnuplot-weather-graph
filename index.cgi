@@ -3,10 +3,10 @@
 from weather import *
 import os
 
-print "Content-Type: image/svg+xml;\n"
+print "Content-Type: text/html;\n"
 
 #file names
-plotfilename = "weather.svg"
+plotfilename = "cache.html"
 lastupdate = "lastupdate"
 
 #begin execution
