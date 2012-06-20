@@ -23,11 +23,13 @@ plot "-" using 1:2 axes x1y2 smooth bezier lt 1 lw 2 notitle,\\
 "-" using 1:2 axes x1y1 smooth bezier lt 3 lw 2 notitle
 """
 
-HTML_TEMPLATE = """<html>
+HTML_TEMPLATE = """<!DOCTYPE html><html>
 <head>
     <title>Last 24 hours weather</title>
     <link rel="apple-touch-icon" href="/grigg/weather/iphone-icon.png" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="white" />
     <style type="text/css">
     html, body {margin:0; padding:0}
     svg: {position:absolute; top:0; left:0; height:100%%; width:100%%;}
