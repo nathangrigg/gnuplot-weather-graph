@@ -17,7 +17,7 @@ set yrange [-0.02:%s]
 set ytics border nomirror
 set y2tics border nomirror
 set grid y2tics
-set title "Last 12 hours rain and temperature at UW weather station"
+set title "Last 24 hours rain and temperature at UW weather station"
 
 plot "-" using 1:2 axes x1y2 smooth bezier lt 1 lw 2 notitle,\\
 "-" using 1:2 axes x1y1 smooth bezier lt 3 lw 2 notitle
@@ -25,7 +25,7 @@ plot "-" using 1:2 axes x1y2 smooth bezier lt 1 lw 2 notitle,\\
 
 HTML_TEMPLATE = """<html>
 <head>
-    <title>Last 12 hours weather</title>
+    <title>Last 24 hours weather</title>
     <link rel="apple-touch-icon" href="/grigg/weather/iphone-icon.png" />
     <meta name="viewport" content="width=device-width" />
     <style type="text/css">
@@ -84,7 +84,7 @@ def gnuplot_cmd(data):
 
 def doupdate(plotfilename):
     #grab the rawdata from atmos.washington.edu
-    rawdata = urllib.urlopen("http://www-k12.atmos.washington.edu/k12/grayskies/plot_nw_wx.cgi?Measurement=Temperature&Measurement=SumRain&station=UWA&interval=12&connect=dataonly")
+    rawdata = urllib.urlopen("http://www-k12.atmos.washington.edu/k12/grayskies/plot_nw_wx.cgi?Measurement=Temperature&Measurement=SumRain&station=UWA&interval=24&connect=dataonly")
     data = read_data(rawdata)
     rawdata.close()
 
