@@ -27,7 +27,7 @@ HTML_TEMPLATE = """<!DOCTYPE html><html>
 <head>
     <title>Last 24 hours weather</title>
     <link rel="apple-touch-icon" href="/grigg/weather/iphone-icon.png" />
-    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width" />
+    <meta name="viewport" content="width=600, user-scalable=0" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="white" />
     <style type="text/css">
@@ -35,10 +35,28 @@ HTML_TEMPLATE = """<!DOCTYPE html><html>
     svg: {position:absolute; top:0; left:0; height:100%%; width:100%%;}
     </style>
 </head>
-<body>
-<div id="plot">
+<body onload="loadForMobileSafari();" onorientationchange="updateOrientation();">
+<script type="text/javascript" language="javascript">
+function updateOrientation()
+{
+    if (window.orientation %% 180 == 90)
+    {
+        document.getElementById('plot').setAttribute("height","350");
+    }
+    else
+    {
+        document.getElementById('plot').setAttribute("height","480");
+    }
+}
+function loadForMobileSafari()
+{
+    if (navigator.userAgent.match(/(iPod|iPhone|iPad)/))
+    {
+        updateOrientation()
+    }
+}
+</script>
 %s
-</div>
 <!-- Weather data is taken from Northwest Weather Resource: http://www-k12.atmos.washington.edu/k12/grayskies/nw_weather.html -->
 </body>
 </html>
@@ -102,7 +120,7 @@ def doupdate(plotfilename):
     graph=graph.replace("degF","&#xb0;")
     # this line is necessary because gnuplot makes funny svgs
     graph=graph.replace("\n xmlns:xlink=",'\n xmlns="http://www.w3.org/2000/svg"\n xmlns:xlink=',1)
-    graph=graph.replace('<?xml version="1.0" standalone="no"?>\n<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "svg-20001102.dtd">', "")
+    graph=graph.replace('<?xml version="1.0" standalone="no"?>\n<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "svg-20001102.dtd">\n<svg', '<svg id="plot"')
     #output graph
 
     html = HTML_TEMPLATE % graph
