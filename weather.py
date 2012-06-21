@@ -34,28 +34,28 @@ HTML_TEMPLATE = """<!DOCTYPE html><html>
     html, body {margin:0; padding:0}
     svg: {position:absolute; top:0; left:0; height:100%%; width:100%%;}
     </style>
+    <script type="text/javascript" language="javascript">
+    function updateOrientation()
+    {
+        if (window.orientation %% 180 == 0)
+        {
+            document.getElementById('plot').setAttribute("height","480");
+        }
+        else
+        {
+            document.getElementById('plot').setAttribute("height","380");
+        }
+    }
+    function loadForMobileSafari()
+    {
+        if (navigator.userAgent.match(/(iPod|iPhone|iPad)/))
+        {
+            updateOrientation()
+        }
+    }
+    </script>
 </head>
 <body onload="loadForMobileSafari();" onorientationchange="updateOrientation();">
-<script type="text/javascript" language="javascript">
-function updateOrientation()
-{
-    if (window.orientation %% 180 == 90)
-    {
-        document.getElementById('plot').setAttribute("height","350");
-    }
-    else
-    {
-        document.getElementById('plot').setAttribute("height","480");
-    }
-}
-function loadForMobileSafari()
-{
-    if (navigator.userAgent.match(/(iPod|iPhone|iPad)/))
-    {
-        updateOrientation()
-    }
-}
-</script>
 %s
 <!-- Weather data is taken from Northwest Weather Resource: http://www-k12.atmos.washington.edu/k12/grayskies/nw_weather.html -->
 </body>
