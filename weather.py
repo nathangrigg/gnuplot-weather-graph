@@ -113,8 +113,8 @@ def doupdate(plotfilename):
     graph = process.communicate("\n".join(gnuplot_cmd(data)))[0]
 
     # replace some text in the labels
-    graph=graph.replace("<text> 0hpm</text>","<text>noon</text>",1)
-    graph=graph.replace("<text> 0ham</text>","<text>midn</text>",1)
+    graph=graph.replace("<text> 0hpm</text>","<text>noon</text>",2)
+    graph=graph.replace("<text> 0ham</text>","<text>midn</text>",2)
     graph=graph.replace("pm</text>","</text>")
     graph=graph.replace("am</text>","</text>")
     graph=graph.replace("degF","&#xb0;")
