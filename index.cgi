@@ -3,8 +3,6 @@
 from weather import *
 import os
 
-print "Content-Type: text/html;\n"
-
 #file names
 plotfilename = "cache.html"
 lastupdate = "lastupdate"

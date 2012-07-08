@@ -124,6 +124,7 @@ def doupdate(plotfilename):
     #output graph
 
     html = HTML_TEMPLATE % graph
+    print "Content-type: text/html;\n"
     print html
 
     #save graph
@@ -134,6 +135,7 @@ def doupdate(plotfilename):
 
 def servegraph(plotfilename):
     graphfile = open(plotfilename,'r')
+    print "Content-type: text/html;\n"
     print graphfile.read()
     graphfile.close()
 
